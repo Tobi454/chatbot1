@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
+import os
 
 app = Flask(__name__)
 
@@ -17,7 +18,8 @@ def get_response(user_input):
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    # Serve index.html from same folder as app.py
+    return send_from_directory(os.getcwd(), "index.html")
 
 @app.route("/get", methods=["POST"])
 def chatbot_response():
