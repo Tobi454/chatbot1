@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fun Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; text-align: center; }
+        #chatbox { width: 400px; margin: 20px auto; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        #messages { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; text-align: left; }
+        .user { color: blue; }
+        .bot { color: green; }
+        input[type=text] { width: 75%; padding: 10px; }
+        button { padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Fun Chatbot</h1>
+    <div id="chatbox">
+        <div id="messages"></div>
+        <input type="text" id="userInput" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            let userMessage = document.getElementById("userInput").value;
+            if (userMessage.trim() === "") return;
+
+            let messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += "<p class='user'><b>You:</b> " + userMessage + "</p>";
+
+            fetch("/get", {
+                method: "POST",
+                body: new URLSearchParams({ "message": userMessage }),
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                messagesDiv.innerHTML += "<p class='bot'><b>Bot:</b> " + data.reply + "</p>";
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+
+            document.getElementById("userInput").value = "";
+        }
+    </script>
+</body>
+</html>
